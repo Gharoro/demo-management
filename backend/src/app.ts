@@ -29,6 +29,14 @@ app.use(
   }),
 );
 
+import routerV1 from "./routes/v1";
+
+app.use("/api/v1", routerV1);
+
+app.get("/", (_req, res) => {
+  res.send("API is running...");
+});
+
 app.all("*", (req, _res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
