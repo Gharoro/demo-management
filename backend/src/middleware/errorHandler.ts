@@ -12,6 +12,7 @@ const errorHandler = (
 ) => {
   let statusCode = 500;
   let message = "Internal Server Error";
+  let errors: { field: string; message: string }[] | undefined;
 
   if (err instanceof AppError) {
     statusCode = err.statusCode;
@@ -19,6 +20,12 @@ const errorHandler = (
   } else if (err instanceof ZodError) {
     statusCode = 400;
     message = "Validation Error";
+    errors = err.issues.map((e: any) => ({
+      field:
+        e.path.filter((p: any) => p !== "body").join(".") ||
+        e.path[e.path.length - 1],
+      message: e.message,
+    }));
   } else if (err.name === "CastError") {
     statusCode = 400;
     message = `Invalid ${err.path}: ${err.value}`;
@@ -34,14 +41,7 @@ const errorHandler = (
     logger.warn(`An Error Occured: ${message}`);
   }
 
-  res
-    .status(statusCode)
-    .json(
-      ApiResponse.error(
-        message,
-        process.env.NODE_ENV === "development" ? err : undefined,
-      ),
-    );
+  res.status(statusCode).json(ApiResponse.error(message, errors));
 };
 
 export default errorHandler;
