@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #04ffff;
+  --color-secondary: #1b0655;
+  --color-text: #101828;
+  --color-text-light: #475467;
+
+  --font-sans: "Axiforma", system-ui, sans-serif;
+}
+
+@font-face {
+  font-family: "Axiforma";
+  src: url("/fonts/Axiforma-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Axiforma";
+  src: url("/fonts/Axiforma-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Axiforma";
+  src: url("/fonts/Axiforma-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Axiforma";
+  src: url("/fonts/Axiforma-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(180deg, #371b86 0%, #280689 100%);
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}

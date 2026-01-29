@@ -57,6 +57,11 @@ class UserService {
     user.isVerified = true;
     user.verificationToken = undefined;
     await user.save();
+    return {
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    };
   }
 
   async resendToken(email: string) {

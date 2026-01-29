@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import userService from "../../services/user.service";
 import { ApiResponse } from "../../utils/response";
 import { generateAccessToken } from "../../utils/jwt";
+import { UserRole } from "../../enums/user.enum";
 
 class AuthController {
   async createUser(req: Request, res: Response, next: NextFunction) {
@@ -11,11 +12,18 @@ class AuthController {
       const userCheck = await userService.checkUserExists(email.toLowerCase());
 
       if (userCheck.exists && userCheck.isVerified) {
+        const accessToken = generateAccessToken({
+          userId: userCheck.userId!.toString(),
+          email: email.toLowerCase(),
+          role: UserRole.USER,
+        });
+
         return res.status(200).json(
           ApiResponse.success(
             {
               userId: userCheck.userId,
               isVerified: true,
+              accessToken,
             },
             "User already verified",
             200,
@@ -67,13 +75,19 @@ class AuthController {
     try {
       const { email, token } = req.body;
 
-      await userService.verifyEmail(email.toLowerCase(), token);
+      const user = await userService.verifyEmail(email.toLowerCase(), token);
+
+      const accessToken = generateAccessToken({
+        userId: user.userId,
+        email: user.email,
+        role: user.role,
+      });
 
       res
         .status(200)
         .json(
           ApiResponse.success(
-            { isVerified: true },
+            { isVerified: true, accessToken },
             "Email verified successfully",
             200,
           ),
